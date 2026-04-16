@@ -1,0 +1,33 @@
+# 敏感配置（含 API 密钥）— 不提交真实配置
+config.json
+
+# 运行时生成的数据文件
+live_runs.jsonl
+backtest_runs.jsonl
+daemon_control.json
+daemon_status.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# 虚拟环境
+.venv/
+venv/
+env/
+
+# IDE / 编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 日志
+*.log
