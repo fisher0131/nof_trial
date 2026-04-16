@@ -1,42 +1,30 @@
-# LLM Trading Bot
+# NOF Trading Bot
 
-基于 Hyperliquid + LLM 的 Streamlit 交易面板。
+基于 **Hyperliquid** 交易所与 **LLM（大语言模型）** 驱动决策的自动化加密货币交易系统，提供 Streamlit Web 控制面板。
 
-保留了：
+## 功能特性
 
-- Streamlit Web UI
-- daemon 后台自动交易
-- LLM 决策与历史回测
-- 原有数据文件读写方式
-
-同时修复了原版 Web 页面的主要性能问题，重点是避免页面渲染时无条件访问交易所 API。
-
-## 主要变化
-
-- 删除 CLI 入口，**不再包含 `app/main.py`**
-- `requirements.txt` 移除了 `rich`
-- `app/config.py` 删除了 CLI 专属的 `app.mode`
-- `app/web.py` 完成性能重构：
-  - 手动下单区改为显式刷新，不再切换页面就请求 API
-  - live/backtest JSONL 读取增加缓存
-  - LLM client 改为缓存复用
-  - 自动刷新只读取 `daemon_status.json`
-  - 回测结果只持久化 `prompt_preview`，不保存完整 prompt
+- **LLM 驱动决策** — 支持 OpenAI / DeepSeek 等多种模型，通过市场数据 Prompt 生成交易信号
+- **Daemon 后台自动交易** — 独立后台进程按设定周期自动执行策略
+- **Streamlit Web 面板** — 实时查看持仓、运行记录、手动下单、配置回测
+- **历史回测** — 基于 JSONL 日志对 LLM 决策进行回测分析
+- **性能优化** — 页面渲染不触发 API 请求，数据读取带缓存，LLM client 复用
 
 ## 目录结构
 
 ```text
-llm-trading-bot/
+nof-refactored/
 ├── app/
-│   ├── config.py
-│   ├── daemon.py
-│   ├── web.py
-│   ├── exchange/
-│   ├── llm/
-│   ├── strategy/
-│   ├── backtest/
-│   └── utils/
-├── config.json
+│   ├── config.py         # 配置模型（Pydantic）
+│   ├── daemon.py         # 后台自动交易进程
+│   ├── web.py            # Streamlit Web 面板
+│   ├── exchange/         # 交易所接口（Hyperliquid / CCXT）
+│   ├── llm/              # LLM 客户端（OpenAI / DeepSeek）
+│   ├── strategy/         # 策略逻辑
+│   ├── backtest/         # 回测模块
+│   └── utils/            # 日志工具
+├── config.json           # 运行配置（含 API 密钥，不提交 Git）
+├── config.example.json   # 配置模板
 ├── requirements.txt
 └── README.md
 ```
@@ -46,7 +34,58 @@ llm-trading-bot/
 - Python 3.10+
 - Windows / Linux / macOS
 
-## 安装依赖
+## 安装
+
+```bash
+pip install -r requirements.txt
+```
+
+依赖包：`ccxt`、`openai`、`pydantic`、`streamlit`、`plotly`、`pandas`
+
+## 配置
+
+复制 `config.example.json` 为 `config.json`，填入以下信息：
+
+```jsonc
+{
+  "exchange": {
+    "api_key": "YOUR_HYPERLIQUID_API_KEY",
+    "secret":  "YOUR_PRIVATE_KEY"
+  },
+  "llm": {
+    "provider": "openai",        // openai 或 deepseek
+    "api_key":  "YOUR_LLM_KEY",
+    "model":    "gpt-4o-mini"
+  }
+}
+```
+
+> `config.json` 已加入 `.gitignore`，不会被提交到版本库。
+
+## 使用
+
+**启动 Web 面板：**
+```bash
+streamlit run app/web.py
+```
+
+**启动后台 Daemon：**
+```bash
+python -m app.daemon
+```
+
+Daemon 运行状态写入 `daemon_status.json`，Web 面板自动读取展示。
+
+## 数据文件
+
+| 文件 | 说明 |
+|------|------|
+| `live_runs.jsonl` | 实盘每轮决策记录 |
+| `backtest_runs.jsonl` | 回测结果记录 |
+| `daemon_status.json` | Daemon 当前状态 |
+| `daemon_control.json` | Daemon 控制指令 |
+
+以上文件均在运行时自动生成，已加入 `.gitignore`。
 
 Windows PowerShell:
 
