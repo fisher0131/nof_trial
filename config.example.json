@@ -1,0 +1,56 @@
+{
+  "app": {
+    "mode": "interactive",
+    "log_level": "INFO"
+  },
+  "openai": {
+    "provider": "deepseek",
+    "api_key": "YOUR_LLM_API_KEY",
+    "base_url": "https://api.deepseek.com",
+    "model": "deepseek-chat",
+    "temperature": 0.5,
+    "saved_apis": [
+      {
+        "name": "deepseek-reasoner",
+        "base_url": "https://api.deepseek.com",
+        "api_key": "YOUR_DEEPSEEK_API_KEY",
+        "model": "deepseek-reasoner",
+        "temperature": 0.5
+      },
+      {
+        "name": "deepseek-chat",
+        "base_url": "https://api.deepseek.com",
+        "api_key": "YOUR_DEEPSEEK_API_KEY",
+        "model": "deepseek-chat",
+        "temperature": 0.5
+      }
+    ]
+  },
+  "exchange": {
+    "name": "hyperliquid-testnet",
+    "api_key": "YOUR_HYPERLIQUID_API_KEY",
+    "secret": "YOUR_HYPERLIQUID_SECRET",
+    "sandbox": true,
+    "base_url": null,
+    "account_address": "YOUR_ACCOUNT_ADDRESS",
+    "wallet_address": "YOUR_WALLET_ADDRESS",
+    "symbol": "BTC/USDC:USDC",
+    "timeframe": "5m",
+    "max_candles": 200,
+    "market_order_slippage": 0.05
+  },
+  "trading": {
+    "usd_notional": 20.0,
+    "max_position": 0.5,
+    "min_trade_notional": 5.0
+  },
+  "backtest": {
+    "start_ms": 0,
+    "end_ms": 0,
+    "initial_usdc": 1000.0
+  },
+  "prompt": {
+    "template": "You are an Aggressive Alpha-Seeking Quantitative Strategist. Your objective is to maximize absolute returns by capitalizing on momentum and breakouts with conviction.\n\nENVIRONMENT & LEVERAGE CONTEXT:\n- Market: Hyperliquid BTC-USDC Perpetual Futures.\n- Leverage: 40x. You are trading derivatives using USDC margin.\n- Margin Math: Using 5% (0.05) of margin at 40x leverage equals a 2x notional position. Using 25% (0.25) equals a 10x notional position. \n\nSTRATEGIC MANDATE:\n- Proactive Execution: Do not wait for perfect setups. Actively capture momentum and volatility. \n- Aggressive Sizing: When signal clarity is high, you MUST scale up your `position_pct` to maximize PnL.\n- Conviction Tiers: \n  - Use 0.05-0.10 (5%-10% of margin) for standard momentum entries or probing signals.\n  - Use 0.15-0.30 (15%-30% of margin) for high-conviction breakouts, strong volume confluence, or major trend reversals.\n- Profit Maximization: Let winners run. When closing positions to take profit, you may scale out (e.g., 0.5) or close completely (1.0) if momentum abruptly dies.\n\nOUTPUT RULES:\n- Return ONLY a pure JSON object. NO markdown formatting, NO conversational text.\n\nFields:\n1. action: \"buy\", \"sell\", or \"hold\". (\"buy\" increases long or reduces short exposure; \"sell\" increases short or reduces long exposure).\n2. position_pct: 0.0-1.0 (float). \n   - If opening/adding to a position: The % of AVAILABLE USDC MARGIN to aggressively deploy (follow the 0.05-0.30 tiers).\n   - If reducing/closing an existing position: The % of the CURRENT POSITION SIZE to liquidate.\n   - Set to 0.0 if action is \"hold\".\n3. confidence: 0.0-1.0 (float). Must be >0.7 to justify position_pct > 0.15.\n4. reason: Max 20 words, explicitly citing specific bullish/bearish OHLCV data points driving this aggressive move.\n\nSymbol: {symbol}\nRecent OHLCV: \n{ohlcv_csv}\n\nCurrent account snapshot JSON (Must contain current open positions and available margin):\n{account_snapshot_json}",
+    "kline_count": 60
+  }
+}
