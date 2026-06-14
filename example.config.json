@@ -1,0 +1,55 @@
+{
+  "app": {
+    "log_level": "INFO"
+  },
+  "openai": {
+    "provider": "deepseek",
+    "api_key": "YOUR_API_KEY_HERE",
+    "base_url": "https://api.example.com",
+    "model": "your-model-name",
+    "temperature": 0.5,
+    "saved_apis": [
+      {
+        "name": "api-profile-1",
+        "base_url": "https://api.example.com",
+        "api_key": "YOUR_API_KEY_HERE",
+        "model": "your-model-name",
+        "temperature": 0.5
+      },
+      {
+        "name": "api-profile-2",
+        "base_url": "https://api.example.com/v1",
+        "api_key": "YOUR_API_KEY_HERE",
+        "model": "your-model-name",
+        "temperature": 0.5
+      }
+    ]
+  },
+  "exchange": {
+    "name": "hyperliquid-testnet",
+    "api_key": "YOUR_EXCHANGE_API_KEY_OR_PUBLIC_ID",
+    "secret": "YOUR_EXCHANGE_SECRET_OR_PRIVATE_KEY",
+    "sandbox": true,
+    "base_url": null,
+    "account_address": "0xYOUR_ACCOUNT_ADDRESS",
+    "wallet_address": "0xYOUR_WALLET_ADDRESS",
+    "symbol": "BTC/USDC:USDC",
+    "timeframe": "5m",
+    "max_candles": 200,
+    "market_order_slippage": 0.05
+  },
+  "trading": {
+    "usd_notional": 20.0,
+    "max_position": 0.5,
+    "min_trade_notional": 5.0
+  },
+  "backtest": {
+    "start_ms": 0,
+    "end_ms": 0,
+    "initial_usdc": 1000.0
+  },
+  "prompt": {
+    "template": "YOUR_PROMPT_TEMPLATE_HERE",
+    "kline_count": 60
+  }
+}
